@@ -10,6 +10,7 @@
 1. Clone Project
 2. NPM Install
 3. Composer Install
+4. Setup DB in .env File
 4. php artisan migrate --seed
 5. php artisan passport:install
 6. setup .env for passport configuration
