@@ -65,6 +65,7 @@ export default {
                 user_id: this.curUser.id,
                 loan_id: loanID
             })
+            this.$alert("Payment Successful");
         }
     },
     computed: {

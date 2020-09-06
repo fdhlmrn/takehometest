@@ -66,7 +66,6 @@ export const store = new Vuex.Store({
             })
         },
         updateLoan(state, loan) {
-
             const index = state.loans.findIndex(item => item.id == loan.loan.id)
             state.loans.splice(index, 1, {
                 'id': loan.loan.id,
@@ -245,6 +244,8 @@ export const store = new Vuex.Store({
                 loan_id: loan.loan_id,
             })
                 .then(response => {
+                    this.dispatch('clearLoans')
+                    this.dispatch('retrieveLoans')
                     console.log(response)
                 })
                 .catch(error => {
