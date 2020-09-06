@@ -11,6 +11,7 @@
 2. NPM Install
 3. Composer Install
 4. Setup DB in .env File
-4. php artisan migrate --seed
-5. php artisan passport:install
-6. setup .env for passport configuration
+5. php artisan migrate --seed
+6. npm run watch
+7. php artisan passport:install
+8. setup .env for passport configuration
