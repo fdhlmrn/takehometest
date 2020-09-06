@@ -172,7 +172,6 @@ export const store = new Vuex.Store({
             axios.get('/loan')
                 .then(response=> {
                     context.commit('retrieveLoans', response.data)
-                    console.log(response.data)
                 })
                 .catch(error => {
                     console.log(error)

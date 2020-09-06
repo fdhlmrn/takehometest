@@ -8,7 +8,6 @@
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
-
         </div>
         <form action="#">
             <div class="form-group">
@@ -90,7 +89,7 @@ export default {
         },
         addLoan() {
             this.checkForm()
-            console.log(this.errors)
+
             if(this.valid){
                 this.$store.dispatch('addLoan', {
                     user_id: this.curUser.id,
