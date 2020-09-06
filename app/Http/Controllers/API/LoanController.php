@@ -13,11 +13,6 @@ use Illuminate\Support\Facades\Validator;
 
 class LoanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         if(auth()->guard('api')->user()->user_type == 1)
@@ -34,51 +29,33 @@ class LoanController extends Controller
         //return response(['loans' => LoanResource::collection($loans), 'message' => 'Retrieved all loans successfully'], 200);
     }
 
-    /**
-     * Get frequency list
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function getFrequency()
     {
         $frequency = LoanFrequency::get();
         return response($frequency, 201);
     }
 
-    /**
-     * Get status list
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function getStatus()
     {
         $status = LoanStatus::get();
         return response($status, 201);
     }
 
-    /**
-     * Get current user object
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function getCurrentUser()
     {
         $curUser = auth()->guard('api')->user();
         return response($curUser, 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $data = $request->all();
 
         $validator = Validator::make($data, [
             'loan_name' => 'required|max:255',
+            'user_id' => 'required',
+            'frequency_id' => 'required',
+            'loan_term' => 'required|regex:^[0-9]{1,2}[:.,-]?$',
             'loan_amount' => "required|regex:/^\d+(\.\d{1,2})?$/",
         ]);
 
@@ -102,31 +79,23 @@ class LoanController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Loan  $loan
-     * @return \Illuminate\Http\Response
-     */
     public function show(Loan $loan)
     {
         $returnLoan = Loan::with(['status','frequency'])->findOrFail($loan->id);
         return response($returnLoan, 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Loan  $loan
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Loan $loan)
     {
+        // Check if status exists
+        $status = LoanStatus::findOrFail($request->status_id)->get();
 
         // Check for staff
         if(Auth()->user()->user_type != 1){
             return response(['Only Staff can update Loan Status']);
+        }
+        if(!$status){
+            return response(['error', 'Validation Error']);
         }
 
         $loan->update($request->all());
@@ -135,12 +104,6 @@ class LoanController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Loan  $loan
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Loan $loan)
     {
         $loan->delete();

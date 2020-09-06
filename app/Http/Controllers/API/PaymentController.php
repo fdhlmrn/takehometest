@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Loan;
 use App\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PaymentController extends Controller
 {
@@ -23,6 +24,18 @@ class PaymentController extends Controller
 
     public function makePayment(Request $request)
     {
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+
+            'user_id' => 'required',
+            'loan_id' => 'required'
+        ]);
+
+        if($validator->fails()){
+            return response(['error' => $validator->errors(), 'Validation Error']);
+        }
+
         $loan = Loan::findOrFail($request->get('loan_id'));
         if($loan->frequency_id == 1)
         {

@@ -231,6 +231,8 @@ export const store = new Vuex.Store({
                 })
                     .then(response => {
                         context.commit('addLoan', response.data)
+                        this.dispatch('clearLoans')
+                        this.dispatch('retrieveLoans')
                         resolve(response)
                     })
                     .catch(error => {
@@ -282,6 +284,8 @@ export const store = new Vuex.Store({
             })
                 .then(response => {
                     context.commit('updateLoan', response.data)
+                    this.dispatch('clearLoans')
+                    this.dispatch('retrieveLoans')
                 })
                 .catch(error => {
                     console.log(error)

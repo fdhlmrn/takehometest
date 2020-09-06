@@ -29,7 +29,6 @@ ul {
 }
 
 li {
-    float: left;
     text-decoration: none;
 }
 

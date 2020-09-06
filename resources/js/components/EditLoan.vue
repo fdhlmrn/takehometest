@@ -9,7 +9,7 @@
 
             <div class="form-group">
                 <label>Loan Amount ({{loan.loan_currency}})</label>
-                <input type="text" class="form-control" v-model="loan.loan_amount" disabled>
+                <input type="number" min="0" class="form-control" v-model="loan.loan_amount" disabled>
             </div>
 
             <div class="form-group">

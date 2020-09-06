@@ -10,6 +10,11 @@
         .bg-light {
             background-color: #eae9e9 !important;
         }
+        input[type=number]::-webkit-inner-spin-button,
+         input[type=number]::-webkit-outer-spin-button {
+             -webkit-appearance: none;
+             margin: 0;
+         }
     </style>
 </head>
 <body>
