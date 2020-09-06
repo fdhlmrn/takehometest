@@ -9,7 +9,7 @@ const router = new VueRouter({
     mode: 'history',
     routes: routes
 });
-axios.defaults.baseURL = 'http://takehometest.test/api'
+axios.defaults.baseURL = process.env.MIX_APP_URL
 
 export const store = new Vuex.Store({
     state: {
