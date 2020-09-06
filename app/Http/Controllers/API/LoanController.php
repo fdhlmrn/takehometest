@@ -8,7 +8,6 @@ use App\Loan;
 use App\LoanFrequency;
 use App\LoanStatus;
 use App\Payment;
-use Artisaninweb\SoapWrapper\SoapWrapper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -91,6 +90,7 @@ class LoanController extends Controller
             'frequency_id' => $request->get('frequency_id'),
             'loan_name' => $request->get('loan_name'),
             'loan_amount' => $request->get('loan_amount'),
+            'loan_balance' => $request->get('loan_amount'),
             'loan_term' => $request->get('loan_term'),
             'loan_currency' => $request->get('loan_currency')
         ]);
@@ -111,8 +111,7 @@ class LoanController extends Controller
     public function show(Loan $loan)
     {
         $returnLoan = Loan::with(['status','frequency'])->findOrFail($loan->id);
-        $payment = Payment::with('loan')->where('loan_id', $loan->id)->get();
-        return response([$returnLoan,$payment], 201);
+        return response($returnLoan, 201);
     }
 
     /**

@@ -9,7 +9,17 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
-
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Loan  $loan
+     * @return \Illuminate\Http\Response
+     */
+    public function getPayment(Loan $loan)
+    {
+        $payment = Payment::with('loan')->where('loan_id', $loan->id)->get();
+        return response($payment, 201);
+    }
 
     public function makePayment(Request $request)
     {
@@ -30,7 +40,12 @@ class PaymentController extends Controller
             'loan_id' => $request->get('loan_id'),
             'pay_amount' => $pay_amount,
         ]);
+
+        $loan->loan_balance = $loan->loan_balance - $pay_amount;
+
         $payment->save();
+        $loan->save();
+
         return response([$payment, 'message' => 'Payment received'], 201);
         //return response(['loans' => LoanResource::collection($loans), 'message' => 'Retrieved all loans successfully'], 200);
     }

@@ -14,8 +14,9 @@
 
             <div class="form-group">
                 <label>Loan Frequency</label>
-                <input type="text" class="form-control" v-model="loan.frequency.frequencies" disabled>
+                <input type="text" class="form-control" v-if="loan.frequency" v-model="loan.frequency.frequencies" disabled>
             </div>
+
             <div class="form-group">
                 <label>Loan Status</label>
                 <br>
@@ -25,7 +26,7 @@
                     </option>
                 </select>
             </div>
-            <button class="btn btn-submit btn-primary" type="submit" @click.stop.prevent="addLoan()" style="float: right">Update Loan</button>
+            <button class="btn btn-submit btn-primary" type="submit" @click.stop.prevent="updateLoan()" style="float: right">Update Loan</button>
         </form>
         <br><br>
         <div>
@@ -55,18 +56,12 @@ export default {
     name: 'edit',
     data() {
         return {
-            loan: {},
-            payments: {}
         }
     },
     created() {
-        let uri = `http://takehometest.test/api/loan/${this.$route.params.id}`
-        console.log(this.$route.params.id)
-        this.axios.get(uri)
-            .then((response) => {
-                this.loan = response.data[0]
-                this.payments = response.data[1]
-            })
+        this.$store.dispatch('showLoan', this.$router.currentRoute.params.id)
+        this.$store.dispatch('retrievePayments', this.$router.currentRoute.params.id)
+        this.$store.dispatch('retrieveFrequencies')
         this.$store.dispatch('retrieveStatus')
         this.$store.dispatch('retrieveCurUser')
     },
@@ -77,8 +72,10 @@ export default {
                 user_id: this.curUser.id,
                 loan_name: this.loan.loan_name,
                 loan_amount: this.loan.loan_amount,
+                loan_balance: this.loan.loan_amount,
                 frequency_id: this.loan.frequency_id,
                 status_id: this.loan.status_id,
+                loan_term: this.loan.loan_term,
             })
                 .then(response=> {
                     this.$router.push({ name: 'home' })
@@ -91,6 +88,15 @@ export default {
         },
         status() {
             return this.$store.getters.status
+        },
+        loan() {
+            return this.$store.getters.showLoan
+        },
+        payments() {
+            return this.$store.getters.payments
+        },
+        frequencies() {
+            return this.$store.getters.frequencies
         },
     }
 }

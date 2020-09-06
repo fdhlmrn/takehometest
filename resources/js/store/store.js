@@ -61,17 +61,22 @@ export const store = new Vuex.Store({
                 frequency_id: loan.selectedFreq,
                 loan_name: loan.loan_name,
                 loan_amount: loan.loan_amount,
+                loan_balance: loan.loan_amount,
                 loan_term: loan.loan_term
             })
         },
         updateLoan(state, loan) {
-            const index = state.loans.findIndex(item => item.id == loan.id)
+
+            const index = state.loans.findIndex(item => item.id == loan.loan.id)
             state.loans.splice(index, 1, {
-                'id': loan.id,
+                'id': loan.loan.id,
+                'user_id' : loan.loan.user_id,
                 'loan_name': loan.loan_name,
-                'frequency_id': loan.frequency_id,
-                'loan_amount': loan.loan_amount,
-                'status_id': loan.status_id,
+                'loan_amount': loan.loan.loan_amount,
+                'loan_balance': loan.loan.loan_amount,
+                'frequency_id': loan.loan.frequency_id,
+                'status_id': loan.loan.status_id,
+                'loan_term': loan.loan.loan_term
             })
         },
         retrieveToken(state, token) {
@@ -79,6 +84,9 @@ export const store = new Vuex.Store({
         },
         retrieveLoans(state,loans) {
             state.loans = loans
+        },
+        showLoan(state,loan) {
+            state.loan = loan
         },
         retrieveFrequencies(state,frequencies) {
             state.frequencies = frequencies
@@ -161,10 +169,11 @@ export const store = new Vuex.Store({
         },
         retrieveLoans(context) {
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
-            axios.defaults.headers.common['Accept'] = 'application/json'
+
             axios.get('/loan')
                 .then(response=> {
                     context.commit('retrieveLoans', response.data)
+                    console.log(response.data)
                 })
                 .catch(error => {
                     console.log(error)
@@ -211,13 +220,13 @@ export const store = new Vuex.Store({
                 })
         },
         addLoan(context, loan) {
-            console.log(loan)
             return new Promise((resolve,reject) => {
                 axios.post('/loan', {
                     user_id: loan.user_id,
                     frequency_id: loan.selectedFreq,
                     loan_name: loan.loan_name,
                     loan_amount: loan.loan_amount,
+                    loan_balance: loan.loan_amount,
                     loan_term: loan.loan_term,
                     loan_currency: loan.selectedCurrency
                 })
@@ -242,22 +251,20 @@ export const store = new Vuex.Store({
                     console.log(error)
                 })
         },
-        retrievePayments(context) {
-
+        retrievePayments(context, id) {
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
-            axios.get('/getPayment/' + router.currentRoute.params)
+
+            axios.get('/getPayment/' + id)
                 .then(response=> {
                     context.commit('retrievePayments', response.data)
-                    console.log(response.data)
                 })
                 .catch(error => {
                     console.log(error)
                 })
         },
-        showLoan(context) {
-            console.log(routes.currentRoute.params.id)
+        showLoan(context, id) {
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
-            axios.get('/loan/')
+            axios.get('/loan/' + id)
                 .then(response=> {
                     context.commit('showLoan', response.data)
                 })
@@ -266,7 +273,6 @@ export const store = new Vuex.Store({
                 })
         },
         updateLoan(context, loan) {
-            console.log(loan)
             axios.patch('/loan/' + loan.id, {
                 frequency_id: loan.frequency_id,
                 loan_name: loan.loan_name,

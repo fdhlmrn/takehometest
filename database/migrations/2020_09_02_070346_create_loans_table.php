@@ -21,6 +21,7 @@ class CreateLoansTable extends Migration
             $table->string('loan_name');
             $table->integer('loan_term');
             $table->decimal('loan_amount', 9,2);
+            $table->decimal('loan_balance', 9,2);
             $table->string('loan_currency');
             $table->timestamps();
 
